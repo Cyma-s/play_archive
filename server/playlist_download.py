@@ -6,7 +6,10 @@ v = "https://www.youtube.com/playlist?list="
 
 
 class PlayListInfo:
-    def __init__(self, pl: Playlist):
+
+    def __init__(self, pl: Playlist = None):
+        if pl is None:
+            return
         self.list_id = pl.playlist_id
         self.list_name = pl.title
         self.videos = list()
@@ -15,9 +18,14 @@ class PlayListInfo:
         return json.dumps(self, default=lambda o:
         o.__dict__, sort_keys=True, indent=4, ensure_ascii=False)
 
+    def fromJson(self, j):
+        self.__dict__ = json.loads(j)
+        self.videos = [VideoInfo().setDict(x) for x in self.videos]
 
 class VideoInfo:
-    def __init__(self, video, url):
+    def __init__(self, video = None, url = None):
+        if video is None or url is None:
+            return
         self.video_id = video.video_id
         self.video_title = video.title
         self.video_url = url
@@ -27,6 +35,10 @@ class VideoInfo:
     def toJSON(self):
         return json.dumps(self, default=lambda o:
         o.__dict__, sort_keys=True, indent=4, ensure_ascii=False)
+
+    def setDict(self, d):
+        self.__dict__ = d
+        return self
 
 
 def download_list(list_id):
@@ -39,6 +51,13 @@ def download_list(list_id):
         first_video.download(dir_path, filename_prefix=f"[{video.video_id}")
 
 
+def dumper(obj):
+    try:
+        return obj.toJSON()
+    except:
+        return obj.__dict__
+
+
 def get_playlist_info_by_id(id):
     pl = Playlist(v + id)
     return get_playlist_info(pl)
@@ -49,7 +68,6 @@ def get_playlist_info(pl: Playlist):
 
     for video, url in zip(pl.videos, pl.video_urls):
         video_info = VideoInfo(video, url)
-
         play_list_info.videos.append(video_info)
 
     return play_list_info
@@ -71,13 +89,16 @@ def save_json(json_object):
 def get_json(playlist_id):
     # local json 파일 읽기
     try:
-        with open(playlist_id + ".json", 'r', encoding='utf-8') as f:
+        with open('.\\playlist\\'+playlist_id + ".json", 'r', encoding='utf-8') as f:
             f = f.read()
-            data = json.loads(f)
-            print(json.dumps(data, indent=4, ensure_ascii=False))
-            return data
-    except:
-        print("Error so we return none")
+            playlist_info = PlayListInfo()
+            playlist_info.fromJson(f)
+            # data = json.dumps(data, default=dumper, indent='\t')
+            # data = json.dumps(data, indent=4, ensure_ascii=False)
+            # print(json.dumps(data, indent=4, ensure_ascii=False))
+            return playlist_info
+    except Exception as e:
+        print("Error so we return none", e)
         return None
 
 
@@ -99,9 +120,9 @@ def refresh_playlist(playlist_id):
     merged_playlist.videos = list(prev_json.videos)
     prev_id_list = [x.video_id for x in prev_json.videos]
     for current_video in current_playlist.videos:
-        if current_video.video_id in prev_id_list:
+        if current_video.video_id not in prev_id_list:
             merged_playlist.videos.append(current_video)
-    return merged_playlist
+    save_json(merged_playlist)
 
 
 def backup_playlist(playlist_id):
@@ -135,6 +156,7 @@ def backup_playlist(playlist_id):
 
 
 if __name__ == "__main__":
-    playlist = input("플레이리스트 아이디? : ")
+    # playlist = input("플레이리스트 아이디? : ")
+    playlist =  "PLk-LmkzFjEgU6fHg-tAK6sm2LKXCJ0Fvr"
     # download_list(playlist)
     refresh_playlist(playlist)
