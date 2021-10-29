@@ -25,11 +25,12 @@ export default {
   },
   methods: {
     fetchData: function() {
+      var vm = this
       axios.get('http://localhost:5000/melody')
         .then(function(response) {
           console.log(response);
-          console.log(this.test_msg)
-          this.test_msg = response.data
+          console.log(vm.test_msg)
+          vm.test_msg = response.data
         })
         .catch(function(error) {
           console.log(error);
