@@ -78,10 +78,22 @@ def get_my_playlist():
 
     return playlist
 
+@app.route("/refresh_playlist")
+def refresh_playlist():
+    id = request.args.get('id')
+
+    # playlist_download.refresh_playlist(id)
+
+    return "너는 한개의 플레이리스트가 최신으로 되었을거야 " + id
+
 
 @app.route("/backup_playlist")
 def backup_playlist():
-    return "너는 한개의 플레이리스트가 백업되었을것이야"
+    id = request.args.get('id')
+
+    # playlist_download.backup_playlist(id)
+
+    return "너는 한개의 플레이리스트가 백업되었을것이야 " + id
 
 
 if __name__ == "__main__":

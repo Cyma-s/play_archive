@@ -20,6 +20,7 @@ class VideoInfo:
         self.video_id = video.video_id
         self.video_title = video.title
         self.video_url = url
+        self.is_deleted = False
         self.toJSON()
 
     def toJSON(self):
@@ -88,13 +89,14 @@ def refresh_playlist(playlist_id):
 
     merged_playlist = get_playlist_info_by_id(playlist_id)
     merged_playlist.videos = list(prev_json.videos)
+    prev_id_list = [x.id for x in prev_json.videos]
     for current_video in current_playlist.videos:
-        if current_video not in prev_json:
+        if current_video.id in prev_id_list:
             merged_playlist.videos.append(current_video)
     return merged_playlist
 
 
-def backup_playlist(playlist):
+def backup_playlist(playlist_id):
     try:
         with open("./savedVideoInfo/.json", 'r', encoding='utf-8') as f:
             f = f.read()
@@ -106,11 +108,15 @@ def backup_playlist(playlist):
             "number": 0
         }
     stored_id = [x for x in data["ids"]]
-    stored_id.sort()
-    playInfo = get_playlist_info(playlist)
 
-    for id in stored_id:
-        if id >
+    playInfo = get_playlist_info_by_id(playlist_id).list_id
+    videos = get_playlist_info_by_id(playlist_id).videos
+
+    for index in range(len(playInfo)):
+        if playInfo[index] in stored_id:
+            # 백업
+            print(1/len(playInfo))
+
 
 
         pass
