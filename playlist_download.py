@@ -11,7 +11,7 @@ def download_list(list_id):
         # print(f"video title : {video.title}")
         first_video = video.streams.first()
         dir_path = ".\\"
-        first_video.download(dir_path)
+        first_video.download(dir_path, filename_prefix=f"[{video.video_id}")
     make_json(pl)
 
 
@@ -29,8 +29,16 @@ def make_json(pl: Playlist):
         video_info['video_url'] = video_urls[i]
         json_dict['videos'].append(video_info)
 
-    with open(pl.playlist_id, "w", encoding='utf-8') as f:
+    with open(pl.playlist_id+".json", "w", encoding='utf-8') as f:
         json.dump(json_dict, f, indent='\t')
+    get_json(pl)
+
+
+def get_json(pl: Playlist):
+    with open(pl.playlist_id + ".json", 'r', encoding='utf-8') as f:
+        f = f.read()
+        data = json.loads(f)
+    print(json.dumps(data, indent=4, ensure_ascii=False))
 
 
 playlist = input("플레이리스트 아이디? : ")
