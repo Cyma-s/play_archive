@@ -12,11 +12,18 @@
     {{refresh_result}}
     <button v-on:click="backupPlaylist">backup Playlist</button>
     {{backup_result}}
+
+    <div>
+        <template v-for="(video, index)  in my_video_list" v-bind:key="index">
+            <VideoElem v-bind:video="video"/>
+        </template>
+      </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import VideoElem from "./components/VideoElem";
 
 const host = "http://localhost:5000/";
 
@@ -29,8 +36,12 @@ export default {
       my_list_info: "My list Information is here",
       my_list_local_info: "my_list_local_info",
       refresh_result: "refresh_result",
-      backup_result: "backup_result"
+      backup_result: "backup_result",
+      video_list: null,
     };
+  },
+  components : {
+    VideoElem
   },
   computed: {
     my_list_id: function () {
@@ -39,6 +50,13 @@ export default {
         return ""
       }
       return list[list.length - 1]
+    },
+    my_video_list: function () {
+      if(this.video_list == null){
+        return []
+      }
+
+      return this.video_list
     }
   },
   methods: {
@@ -48,6 +66,7 @@ export default {
         .get(host + "get_playlist" + "?id=" + vm.my_list_id)
         .then(function (response) {
           vm.my_list_info = JSON.parse(response.data.live);
+          vm.video_list = vm.my_list_info.videos
           vm.my_list_local_info = "뭐" + response.data.local;
         })
         .catch(function (error) {
