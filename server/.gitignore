@@ -109,8 +109,3 @@ fabric.properties
 .idea/codestream.xml
 
 # End of https://www.toptal.com/developers/gitignore/api/pycharm
-/server/.idea/inspectionProfiles/profiles_settings.xml
-/server/.idea/misc.xml
-/server/.idea/modules.xml
-/server/.idea/PycharmProjects.iml
-/server/.idea/vcs.xml
