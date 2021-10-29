@@ -13,7 +13,7 @@ class PlayListInfo:
 
     def toJSON(self):
         return json.dumps(self, default=lambda o:
-        o.__dict__, sort_keys=True, indent=4)
+        o.__dict__, sort_keys=True, indent=4, ensure_ascii=False)
 
 
 class VideoInfo:
@@ -104,7 +104,7 @@ def refresh_playlist(playlist_id):
     return merged_playlist
 
 
-def backup_playlist(playlist):
+def backup_playlist(playlist_id):
     try:
         with open("./savedVideoInfo/.json", 'r', encoding='utf-8') as f:
             f = f.read()
@@ -116,10 +116,14 @@ def backup_playlist(playlist):
             "number": 0
         }
     stored_id = [x for x in data["ids"]]
-    stored_id.sort()
-    playInfo = get_playlist_info(playlist).videos
 
-    for id in stored_id:
+    playInfo = get_playlist_info_by_id(playlist_id).list_id
+    videos = get_playlist_info_by_id(playlist_id).videos
+
+    for index in range(len(playInfo)):
+        if playInfo[index] in stored_id:
+            # 백업
+            print(1/len(playInfo))
         pass
 
     pass
