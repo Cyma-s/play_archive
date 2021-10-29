@@ -114,3 +114,4 @@ fabric.properties
 /server/.idea/modules.xml
 /server/.idea/PycharmProjects.iml
 /server/.idea/vcs.xml
+/server/__pycache__/*.pyc
