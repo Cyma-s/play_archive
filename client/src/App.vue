@@ -1,42 +1,55 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js App" />
   <div id="app">
-    <button v-on:click="fetchData">get data</button>
-    {{ test_msg }}
+    <input v-model="my_list_id" placeholder="여기를 수정해보세요" />
+    <p>메시지: {{ my_list_id }}</p>
+    <button v-on:click="getPlaylist">get data</button>
+    {{ my_list_info }}
+    <pre text-align: left>{{JSON.stringify(my_list_info, null, 2)}}</pre>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 
-import HelloWorld from "./components/HelloWorld.vue"
-import axios from "axios"
+const host = "http://localhost:5000/";
 
 export default {
-  el: '#app',
+  el: "#app",
   name: "App",
-  data () {
+  data() {
     return {
-      test_msg: "CLICK BUTTON!" 
-    }
-  },
-  components: {
-    HelloWorld,
+      my_list_id: "PLhRJBsMSloa3-6Lq_qGmJgQFvuLCxAGSB",
+      my_list_info: "My list Information is here",
+    };
   },
   methods: {
-    fetchData: function() {
-      var vm = this
-      axios.get('http://localhost:5000/melody')
-        .then(function(response) {
+    fetchData: function () {
+      var vm = this;
+      axios
+        .get(host + "melody")
+        .then(function (response) {
           console.log(response);
-          console.log(vm.test_msg)
-          vm.test_msg = response.data
+          console.log(vm.test_msg);
+          vm.test_msg = response.data;
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log(error);
         });
-    }
-  }
+    },
+    getPlaylist: function () {
+      var vm = this;
+      axios
+        .get(host + "get_playlist" + "?id=" + vm.my_list_id)
+        .then(function (response) {
+          console.log(response);
+          console.log(vm.test_msg);
+          vm.my_list_info = response.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+  },
 };
 </script>
 
@@ -45,7 +58,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
   margin-top: 60px;
 }
