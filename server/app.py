@@ -1,18 +1,22 @@
+import json
+
 from flask import Flask
 from flask import Response
 from flask import request
 from flask_cors import CORS
 
-#(재훈재훈)
+# (재훈재훈)
 import playlist_download as pd
 import playlist_download
 
 app = Flask(__name__)
 CORS(app)
 
+
 @app.route("/")
 def index():
     return "Hello world"
+
 
 @app.route("/melody")
 def my_melody():
@@ -26,26 +30,27 @@ def my_melody():
 
     return my_res
 
+
 @app.route("/get_playlist")
 def get_my_playlist():
     # http://localhost:5000/get_my_playlist?id=~~~~~~~~~
-    #(재훈재훈)
+    # (재훈재훈)
     id = request.args.get('id')
-    videoList = pd.get_video_List(id)
+    playlist_info = pd.get_playlist_info_by_id(id)
 
     # 이거 한줄로 끝남
-    videoIds = [x.id for x in videoList]
+    videoIds = [x.video_id for x in playlist_info.videos]
 
     localVideos = pd.get_json(id)
-    localVideoIds = [x['id'] for x in localVideos]
+    localVideoIds = [x['id'] for x in (localVideos if localVideos is not None else list())]
+
+    return {"live": playlist_info.toJSON(), "local": localVideos}
 
     videoIds.sort()
     localVideoIds.sort()
-    deletedList = []
 
-
-    localVideoIds = ['id1', 'id2', 'id3', 'id4', 'id5', 'id6', 'id7']
-    videoIds = ['id1', 'id2', 'id3', 'id5', 'id7']
+    # localVideoIds = ['id1', 'id2', 'id3', 'id4', 'id5', 'id6', 'id7']
+    # videoIds = ['id1', 'id2', 'id3', 'id5', 'id7']
     deletedList = []
 
     for l_id in localVideoIds:
@@ -55,7 +60,7 @@ def get_my_playlist():
             videoIds.pop()
 
     print(deletedList)
-    #(재훈훈끝)
+    # (재훈훈끝)
 
     id = request.args.get('id')
 
@@ -73,9 +78,11 @@ def get_my_playlist():
 
     return playlist
 
+
 @app.route("/backup_playlist")
 def backup_playlist():
-    pass
+    return "너는 한개의 플레이리스트가 백업되었을것이야"
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
