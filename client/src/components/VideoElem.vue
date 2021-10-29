@@ -1,10 +1,10 @@
 <template>
-  <div v-bind:class="video_id">
+  <div class="div_out">
     <h1>{{ msg }}</h1>
-      <div>video_title : {{video.video_title}}</div>
-      <div>video_id : {{video.video_id}}</div>
+      <p>video_title : {{video.video_title}}</p>
+      <p>video_id : {{video.video_id}}</p>
       <a v-bind:href="video.video_url" target="_blank" rel="noopener">영상 링크</a>
-      <div>isdeleted : {{video.is_deleted}}</div>
+      <p>isdeleted : {{video.is_deleted}}</p>
   </div>
 </template>
 
@@ -32,5 +32,11 @@ li {
 }
 a {
   color: #42b983;
+}
+div {
+  /* width : 1000px; */
+  align-self: cn;
+  background-color: #ebebeb;
+  border: 1px solid rgb(27, 209, 11);
 }
 </style>

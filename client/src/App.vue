@@ -1,23 +1,34 @@
 <template>
   <div id="app">
-    <input v-model="my_list_id_raw" placeholder="플레이리스트 아이디를 넣어주세요." />
-    <p> 선택한 플레이리스트 : {{ my_list_id_raw }}</p>
-    <p> 플레이리스트 id : {{ my_list_id }}</p>
+    <div id="title">
+      PLAY <br />
+      ARCHIVE
+    </div>
 
-    <button v-on:click="getPlaylist">get data</button>
-    {{ my_list_info }}
-    <pre text-align: left>{{JSON.stringify(my_list_info, null, 2)}}</pre>
-    {{ my_list_local_info }}
-    <button v-on:click="refreshPlayList">refresh Playlist</button>
-    {{refresh_result}}
-    <button v-on:click="backupPlaylist">backup Playlist</button>
-    {{backup_result}}
+    <br /><br />
+    <div id="desc">플레이리스트 아이디를 입력해주세요.</div>
+    <br /><br /><br /><br />
+    <input
+      v-model="my_list_id_raw"
+      placeholder="플레이리스트 아이디를 넣어주세요."
+    />
+    <!-- <p>선택한 플레이리스트 : {{ my_list_id_raw }}</p> -->
+    <div>플레이리스트 id : {{ my_list_id }}</div>
+    <br /><br /><br />
+    <button v-on:click="getPlaylist">get data</button><br><br>
+    <!-- {{ my_list_info }} -->
+    <!-- <pre text-align: left>{{JSON.stringify(my_list_info, null, 2)}}</pre> -->
+    <!-- {{ my_list_local_info }} -->
+    <button v-on:click="refreshPlayList">refresh Playlist</button><br><br>
+    <!-- {{refresh_result}} -->
+    <button v-on:click="backupPlaylist">backup Playlist</button><br><br>
+    <!-- {{backup_result}} -->
 
-    <div>
-        <template v-for="(video, index)  in my_video_list" v-bind:key="index">
-            <VideoElem v-bind:video="video"/>
-        </template>
-      </div>
+<div text-align="center" >
+    <template v-for="(video, index) in my_video_list" v-bind:key="index">
+      <VideoElem v-bind:video="video" />
+    </template>
+    </div>
   </div>
 </template>
 
@@ -40,24 +51,24 @@ export default {
       video_list: null,
     };
   },
-  components : {
-    VideoElem
+  components: {
+    VideoElem,
   },
   computed: {
     my_list_id: function () {
-      var list = this.my_list_id_raw.split("=")
-      if(list.length == 0){
-        return ""
+      var list = this.my_list_id_raw.split("=");
+      if (list.length == 0) {
+        return "";
       }
-      return list[list.length - 1]
+      return list[list.length - 1];
     },
     my_video_list: function () {
-      if(this.video_list == null){
-        return []
+      if (this.video_list == null) {
+        return [];
       }
 
-      return this.video_list
-    }
+      return this.video_list;
+    },
   },
   methods: {
     getPlaylist: function () {
@@ -66,7 +77,7 @@ export default {
         .get(host + "get_playlist" + "?id=" + vm.my_list_id)
         .then(function (response) {
           vm.my_list_info = JSON.parse(response.data.live);
-          vm.video_list = vm.my_list_info.videos
+          vm.video_list = vm.my_list_info.videos;
           vm.my_list_local_info = "뭐" + response.data.local;
         })
         .catch(function (error) {
@@ -79,7 +90,7 @@ export default {
       axios
         .get(host + "refresh_playlist" + "?id=" + vm.my_list_id)
         .then(function (response) {
-          vm.backupPlaylist = response.data
+          vm.backupPlaylist = response.data;
         })
         .catch(function (error) {
           console.log(error);
@@ -91,7 +102,7 @@ export default {
       axios
         .get(host + "backup_playlist" + "?id=" + vm.my_list_id)
         .then(function (response) {
-          vm.backup_result = response.data
+          vm.backup_result = response.data;
         })
         .catch(function (error) {
           console.log(error);
@@ -108,5 +119,40 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   margin-top: 60px;
+  text-align: center;
+}
+#desc {
+  font-size: 35px;
+}
+#title {
+  font-size: 100px;
+  text-align: center;
+  width: 100%;
+  display: inline-block;
+  position: relative;
+}
+input {
+  width: 70%;
+  border: 2px solid #aaa;
+  border-radius: 4px;
+  margin: 8px 0;
+  outline: none;
+  padding: 8px;
+  box-sizing: border-box;
+  transition: 0.3s;
+}
+
+input:focus {
+  border-color: dodgerBlue;
+  box-shadow: 0 0 8px 0 dodgerBlue;
+}
+button {
+  background: #0069eb;
+  color: #fff;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+  padding: 15px 30px;
+  text-decoration: none;
 }
 </style>
