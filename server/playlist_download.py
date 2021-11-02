@@ -124,6 +124,8 @@ def refresh_playlist(playlist_id):
             merged_playlist.videos.append(current_video)
     save_json(merged_playlist)
 
+    return merged_playlist
+
 
 def backup_playlist(playlist_id):
     try:

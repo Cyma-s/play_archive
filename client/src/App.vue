@@ -15,20 +15,20 @@
     <!-- <p>선택한 플레이리스트 : {{ my_list_id_raw }}</p> -->
     <div>플레이리스트 id : {{ my_list_id }}</div>
     <br /><br /><br />
-    <button v-on:click="getPlaylist">get data</button><br><br>
+    <button v-on:click="getPlaylist">get data</button><br /><br />
     <!-- {{ my_list_info }} -->
     <!-- <pre text-align: left>{{JSON.stringify(my_list_info, null, 2)}}</pre> -->
     <!-- {{ my_list_local_info }} -->
-    <button v-on:click="refreshPlayList">refresh Playlist</button><br><br>
-    <!-- {{refresh_result}} -->
-    <button v-on:click="backupPlaylist">backup Playlist</button><br><br>
+    <button v-on:click="refreshPlayList">refresh Playlist</button><br /><br />
+    <div text-align: left>
+      <pre text-align: left>{{ JSON.stringify(refresh_result, null, 2) }}</pre>
+    </div>
+    <button v-on:click="backupPlaylist">backup Playlist</button><br /><br />
     <!-- {{backup_result}} -->
 
-<div text-align="center" >
     <template v-for="(video, index) in my_video_list" v-bind:key="index">
       <VideoElem v-bind:video="video" />
     </template>
-    </div>
   </div>
 </template>
 
@@ -76,9 +76,10 @@ export default {
       axios
         .get(host + "get_playlist" + "?id=" + vm.my_list_id)
         .then(function (response) {
+          console.log(response.data.live);
           vm.my_list_info = JSON.parse(response.data.live);
           vm.video_list = vm.my_list_info.videos;
-          vm.my_list_local_info = "뭐" + response.data.local;
+          vm.my_list_local_info = "뭐" + JSON.parse(response.data.local);
         })
         .catch(function (error) {
           console.log(error);
@@ -90,7 +91,8 @@ export default {
       axios
         .get(host + "refresh_playlist" + "?id=" + vm.my_list_id)
         .then(function (response) {
-          vm.backupPlaylist = response.data;
+          vm.refresh_result = response.data;
+          vm.video_list = response.data.videos;
         })
         .catch(function (error) {
           console.log(error);

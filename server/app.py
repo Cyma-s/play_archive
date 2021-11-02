@@ -42,12 +42,12 @@ def get_my_playlist():
     videoIds = [x.video_id for x in playlist_info.videos]
 
     localVideos = pd.get_json(id)
-    localVideoIds = [x['id'] for x in (localVideos if localVideos is not None else list())]
+    # localVideoIds = [x['id'] for x in (localVideos if localVideos is not None else list())]
 
-    return {"live": playlist_info.toJSON(), "local": localVideos}
+    return {"live": playlist_info.toJSON(), "local": localVideos.toJSON()}
 
     videoIds.sort()
-    localVideoIds.sort()
+    # localVideoIds.sort()
 
     # localVideoIds = ['id1', 'id2', 'id3', 'id4', 'id5', 'id6', 'id7']
     # videoIds = ['id1', 'id2', 'id3', 'id5', 'id7']
@@ -82,9 +82,9 @@ def get_my_playlist():
 def refresh_playlist():
     id = request.args.get('id')
 
-    # playlist_download.refresh_playlist(id)
+    refresh_playlist = playlist_download.refresh_playlist(id)
 
-    return "너는 한개의 플레이리스트가 최신으로 되었을거야 " + id
+    return refresh_playlist.toJSON()
 
 
 @app.route("/backup_playlist")
